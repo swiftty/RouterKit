@@ -6,6 +6,7 @@ open class Router<Context, Output> {
     public enum AllowedHosts {
         case any
         case only(Set<String>)
+        case merge(Set<String>, removing: Set<String> = [])
     }
 
     public struct Request<PathComponents> {
@@ -19,12 +20,12 @@ open class Router<Context, Output> {
     }
 
     private let context: Context
-    private let defaultAllowedHosts: AllowedHosts
+    private let defaultAllowedHosts: Set<String>?
 
     private var routes: [AnyRoute] = []
     private var cache: [URL: Route<Output>] = [:]
 
-    public init(context: Context, defaultAllowedHosts: AllowedHosts = .any) {
+    public init(context: Context, defaultAllowedHosts: Set<String>? = nil) {
         self.context = context
         self.defaultAllowedHosts = defaultAllowedHosts
     }
@@ -35,10 +36,10 @@ open class Router<Context, Output> {
         handler: @escaping (Request<PathComponents>) -> Output?
     ) {
         let context = context
-        let allowedHosts = allowedHosts ?? defaultAllowedHosts
+        let allowedHosts = allowedHosts?.resolve(with: defaultAllowedHosts) ?? defaultAllowedHosts
         let regex = regex.anchorsMatchLineEndings()
         routes.append(AnyRoute { url in
-            guard allowedHosts.checkHost(in: url),
+            guard allowedHosts?.checkHost(in: url) ?? true,
                   let match = try? regex.wholeMatch(in: url.path()),
                   let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
                   let output = handler(Request(url: comps, path: match.output, context: context)) else { return nil }
@@ -67,19 +68,27 @@ open class Router<Context, Output> {
 }
 
 extension Router where Context == Void {
-    public convenience init(defaultAllowedHosts: AllowedHosts = .any) {
+    public convenience init(defaultAllowedHosts: Set<String>? = nil) {
         self.init(context: (), defaultAllowedHosts: defaultAllowedHosts)
     }
 }
 
 private extension Router.AllowedHosts {
-    func checkHost(in url: URL) -> Bool {
+    func resolve(with defaults: Set<String>?) -> Set<String>? {
         switch self {
         case .any:
-            return true
+            return nil
         case .only(let hosts):
-            guard let host = url.host() else { return false }
-            return hosts.contains(host)
+            return hosts
+        case .merge(let hosts, removing: let removing):
+            return (defaults ?? []).union(hosts).subtracting(removing)
         }
+    }
+}
+
+private extension Set<String> {
+    func checkHost(in url: URL) -> Bool {
+        guard let host = url.host() else { return false }
+        return contains(host)
     }
 }
