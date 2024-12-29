@@ -2,17 +2,17 @@ name: test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
   mac-os:
-    runs-on: macos-14
+    runs-on: macos-latest
     strategy:
       matrix:
-        xcode: [ "15.1" ]
+        xcode: ["16.1"]
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
