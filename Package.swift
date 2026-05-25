@@ -15,7 +15,7 @@ let package = Package(
             targets: ["RouterKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftty/swift-project-starter", from: "0.3.0"),
+        // .package(url: "https://github.com/swiftty/swift-project-starter", from: "0.3.0"),
         // AUTO GENERATED ↓: swift-project-starter: deps
         .package(url: "https://github.com/swiftty/swift-format-plugin", from: "1.0.0")
         // AUTO GENERATED ↑: swift-project-starter: deps
