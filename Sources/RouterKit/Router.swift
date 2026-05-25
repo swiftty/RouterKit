@@ -33,20 +33,22 @@ open class Router<Context, Output> {
     open func register<PathComponents>(
         _ regex: Regex<PathComponents>,
         allowedHosts: AllowedHosts? = nil,
-        handler: @escaping (Request<PathComponents>) -> Output?
+        handler: @escaping (Request<PathComponents>) -> Output?,
     ) {
         let context = context
         let allowedHosts = allowedHosts?.resolve(with: defaultAllowedHosts) ?? defaultAllowedHosts
         let regex = regex.anchorsMatchLineEndings()
-        routes.append(AnyRoute { url in
-            guard allowedHosts?.checkHost(in: url) ?? true,
-                  let match = try? regex.wholeMatch(in: url.path()),
-                  let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                  let output = handler(Request(url: comps, path: match.output, context: context)) else { return nil }
-            return Route(url: url) {
-                output
-            }
-        })
+        routes.append(
+            AnyRoute { url in
+                guard allowedHosts?.checkHost(in: url) ?? true,
+                    let match = try? regex.wholeMatch(in: url.path()),
+                    let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                    let output = handler(Request(url: comps, path: match.output, context: context))
+                else { return nil }
+                return Route(url: url) {
+                    output
+                }
+            })
     }
 
     open func route(_ url: URL) -> Route<Output>? {
