@@ -8,7 +8,7 @@ Manage routing events.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swiftty/RouterKit", from: "0.0.0")
+    .package(url: "https://github.com/swiftty/RouterKit", from: "0.1.0")
 ]
 ```
 
