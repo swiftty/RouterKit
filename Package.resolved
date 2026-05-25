@@ -1,0 +1,24 @@
+{
+  "originHash" : "03b78676501cf63d1cd8277352b7e0eb50ff018cee67f018d91d68b9116e65e2",
+  "pins" : [
+    {
+      "identity" : "swift-format-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftty/swift-format-plugin",
+      "state" : {
+        "revision" : "962d1a34765c0eff20a4a13d6e6c1128c20c61c5",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swift-project-starter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftty/swift-project-starter",
+      "state" : {
+        "revision" : "6256933eec18d026b28bdc64e661b9e9962df8eb",
+        "version" : "0.3.0"
+      }
+    }
+  ],
+  "version" : 3
+}

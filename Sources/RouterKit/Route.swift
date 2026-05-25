@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 public struct Route<Value> {
     public var url: URL

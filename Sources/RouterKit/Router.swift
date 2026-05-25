@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 private let MAX_CACHE_SIZE = 10
 
