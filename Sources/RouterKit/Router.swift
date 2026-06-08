@@ -2,7 +2,7 @@ public import Foundation
 
 private let MAX_CACHE_SIZE = 10
 
-open class Router<Context, Output> {
+final public class Router<Context, Output: Sendable> {
     public enum AllowedHosts {
         case any
         case only(Set<String>)
@@ -30,7 +30,7 @@ open class Router<Context, Output> {
         self.defaultAllowedHosts = defaultAllowedHosts
     }
 
-    open func register<PathComponents>(
+    public func register<PathComponents>(
         _ regex: Regex<PathComponents>,
         allowedHosts: AllowedHosts? = nil,
         handler: @escaping (Request<PathComponents>) -> Output?,
@@ -51,7 +51,7 @@ open class Router<Context, Output> {
             })
     }
 
-    open func route(_ url: URL) -> Route<Output>? {
+    public func route(_ url: URL) -> Route<Output>? {
         if let routing = cache[url] {
             return routing
         }
@@ -74,6 +74,9 @@ extension Router where Context == Void {
         self.init(context: (), defaultAllowedHosts: defaultAllowedHosts)
     }
 }
+
+@available(*, unavailable)
+extension Router: Sendable {}
 
 private extension Router.AllowedHosts {
     func resolve(with defaults: Set<String>?) -> Set<String>? {
